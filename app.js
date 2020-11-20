@@ -18,32 +18,38 @@ const directoryPath = "./file";
 
 app.get("/", (req, res) => {});
 
-
 app.post("/", async (req, res) => {
   let transporter = nodemailer.createTransport(config);
 
-  let a = []
+  let a = [];
 
-  fs.readdirSync(directoryPath).forEach(file => {
-    a.push(file)
+  fs.readdirSync(directoryPath).forEach((file) => {
+    a.push(file);
   });
 
-  console.log(a);
 
   let mailOptions = {
-    to: "ddnn2026@gmail.com",
+    to: req.body.to,
     subject: req.body.title,
     text: req.body.body,
-    attachments: {
-      path: "./file/twl.pdf",
-    },
+    attachments: [
+      {
+        path: "./file/a.pdf",
+      },
+      {
+        path: "./file/b.pdf",
+      },
+      {
+        path: "./file/c.pdf",
+      },
+    ],
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       res.send(rs.FAILURE(error));
     } else {
-      res.send(rs.SUCCESS(aa));
+      res.send(rs.SUCCESS(info.response));
     }
   });
 });
