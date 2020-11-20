@@ -11,23 +11,39 @@ const config = require("./config");
 
 const nodemailer = require("nodemailer");
 
-app.post("/", (req, res) => {
+const path = require("path");
+const fs = require("fs");
+
+const directoryPath = "./file";
+
+app.get("/", (req, res) => {});
+
+
+app.post("/", async (req, res) => {
   let transporter = nodemailer.createTransport(config);
 
+  let a = []
+
+  fs.readdirSync(directoryPath).forEach(file => {
+    a.push(file)
+  });
+
+  console.log(a);
+
   let mailOptions = {
-    from: req.body.form,
     to: "ddnn2026@gmail.com",
     subject: req.body.title,
     text: req.body.body,
+    attachments: {
+      path: "./file/twl.pdf",
+    },
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
       res.send(rs.FAILURE(error));
     } else {
-      console.log("Email sent: " + info.response);
-       res.send(rs.SUCCESS(info));
+      res.send(rs.SUCCESS(aa));
     }
   });
 });
