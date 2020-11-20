@@ -9,27 +9,25 @@ app.use(bodyparser.json());
 const rs = require("./return");
 const config = require("./config");
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+const nodemailer = require("nodemailer");
 
 app.post("/", (req, res) => {
-  res.send(rs.FAILURE(req.body.title));
+  let transporter = nodemailer.createTransport(config);
 
-  var transporter = nodemailer.createTransport(config.gmail);
-
-  var mailOptions = {
-    from: "whatmmobd3@gmail.com",
+  let mailOptions = {
+    from: req.body.form,
     to: "ddnn2026@gmail.com",
-    subject: "Sending Email using Node.js",
-    text: "That was easy!",
+    subject: req.body.title,
+    text: req.body.body,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
+      res.send(rs.FAILURE(error));
     } else {
       console.log("Email sent: " + info.response);
+       res.send(rs.SUCCESS(info));
     }
   });
 });
